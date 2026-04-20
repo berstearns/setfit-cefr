@@ -1,0 +1,46 @@
+# Defaults for `train.ipynb`. Everything the notebook does — cloning,
+# linking CSVs, training, predicting — is governed by this file.
+#
+# The notebook loads these defaults and layers any `OVERRIDES` dict you set
+# in its first user-editable cell on top. See NotebookConfig.from_sources().
+
+input:
+  # Folder containing your 5 CSVs. Override this in the notebook's
+  # OVERRIDES dict: {"input.data_dir": "/my/path/to/csvs"}.
+  data_dir: /path/to/your/csvs
+
+  # Map of role -> filename. Override per-file if your copies are renamed.
+  filenames:
+    train:     norm-EFCAMDAT-train.csv
+    remainder: norm-EFCAMDAT-remainder.csv
+    test:      norm-EFCAMDAT-test.csv
+    kupa:      norm-KUPA-KEYS.csv
+    celva:     norm-CELVA-SP.csv
+
+  # Which entries in `filenames` feed train.py vs. predict.py.
+  train_keys: [train, remainder]
+  test_keys:  [test, kupa, celva]
+
+output:
+  # Where the notebook clones the repo from (change to a fork if needed).
+  repo_url: https://github.com/berstearns/setfit-cefr.git
+  repo_dir: setfit-cefr
+  # Where the CSVs land after linking (matches configs/default.yaml).
+  local_data_dir: data
+  # Where train.py / predict.py write artefacts.
+  models_root: models
+  predictions_root: predictions
+
+train:
+  # YAML config passed to `train.py --config ...`.
+  config_path: configs/default.yaml
+  # Extra CLI flags, e.g. ["--epochs", "3", "--seed", "7"].
+  flag_args: []
+  # Dotted-path overrides, e.g. ["training.max_length=256"].
+  dotted_overrides: []
+
+predict:
+  # null means: let predict.py use the model's saved config.yaml.
+  config_path: null
+  flag_args: []
+  dotted_overrides: []
