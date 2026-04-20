@@ -9,23 +9,13 @@ from setfit_cefr.config import (
     TrainingConfig,
     set_file_existence_checks,
 )
-from setfit_cefr.notebook_config import (
-    InputConfig,
-    NotebookConfig,
-    OutputConfig,
-    RunConfig,
-)
 
 __all__ = [
     "Config",
     "ConfigValidationError",
     "DataConfig",
-    "InputConfig",
     "ModelConfig",
-    "NotebookConfig",
-    "OutputConfig",
     "ReportingConfig",
-    "RunConfig",
     "RuntimeConfig",
     "TrainingConfig",
     "set_file_existence_checks",
