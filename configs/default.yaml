@@ -1,0 +1,60 @@
+# Default SetFit-CEFR configuration.
+# Every field here maps 1:1 to a dataclass field in src/setfit_cefr/config.py.
+# CLI flags (e.g. --epochs 3) and --override dot.path=value take precedence.
+
+run_name: setfit-mpnet-efcamdat
+experiment_tag: default
+
+data:
+  train_files:
+    - data/norm-EFCAMDAT-train.csv
+    - data/norm-EFCAMDAT-remainder.csv
+  text_column: text
+  label_column: cefr_level
+  id_column: writing_id
+  label_order: [A1, A2, B1, B2, C1, C2]
+  min_text_chars: 10
+  max_text_chars: 2000
+  dropna_labels: true
+  dedupe_text: true
+  # SetFit is a few-shot framework; training on hundreds of thousands of rows
+  # is slow and usually pointless. Sample N examples per CEFR class instead.
+  sample_per_class: 64
+  eval_split_ratio: 0.05
+  eval_max_size: 1500
+  stratify_eval: true
+
+model:
+  pretrained_model: sentence-transformers/paraphrase-multilingual-mpnet-base-v2
+  head_type: logistic        # logistic | setfit_head
+  multi_target_strategy: null  # single-label => null
+
+training:
+  num_epochs: 1
+  batch_size: 16
+  body_learning_rate: 2.0e-5
+  head_learning_rate: 1.0e-2
+  num_iterations: 20
+  seed: 42
+  eval_strategy: epoch
+  save_strategy: epoch
+  load_best_model_at_end: true
+  metric: accuracy
+  warmup_proportion: 0.1
+  l2_weight: 0.01
+  use_amp: false
+  max_length: 256
+
+runtime:
+  device: auto               # auto | cpu | cuda | cuda:N
+  output_root: models
+  predictions_root: predictions
+  cache_dir: null
+  num_workers: 0
+
+reporting:
+  compute_macro_f1: true
+  compute_qwk: true
+  compute_adjacent_accuracy: true
+  save_confusion_matrix: true
+  top_k_examples: 5

@@ -1,0 +1,54 @@
+# Tiny config for a sanity smoke run. Seconds-to-minutes, not hours.
+run_name: setfit-smoke
+experiment_tag: smoke
+
+data:
+  train_files:
+    - data/norm-EFCAMDAT-train.csv
+  text_column: text
+  label_column: cefr_level
+  id_column: writing_id
+  label_order: [A1, A2, B1, B2, C1, C2]
+  min_text_chars: 10
+  max_text_chars: 1000
+  dropna_labels: true
+  dedupe_text: true
+  sample_per_class: 8
+  eval_split_ratio: 0.1
+  eval_max_size: 200
+  stratify_eval: true
+
+model:
+  pretrained_model: sentence-transformers/paraphrase-MiniLM-L3-v2
+  head_type: logistic
+  multi_target_strategy: null
+
+training:
+  num_epochs: 1
+  batch_size: 8
+  body_learning_rate: 2.0e-5
+  head_learning_rate: 1.0e-2
+  num_iterations: 5
+  seed: 42
+  eval_strategy: epoch
+  save_strategy: epoch
+  load_best_model_at_end: true
+  metric: accuracy
+  warmup_proportion: 0.1
+  l2_weight: 0.01
+  use_amp: false
+  max_length: 128
+
+runtime:
+  device: auto
+  output_root: models
+  predictions_root: predictions
+  cache_dir: null
+  num_workers: 0
+
+reporting:
+  compute_macro_f1: true
+  compute_qwk: true
+  compute_adjacent_accuracy: true
+  save_confusion_matrix: true
+  top_k_examples: 3
